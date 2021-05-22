@@ -23,7 +23,6 @@ public class Usuario {
 
     @NotBlank
     @Email
-
     private String login;
 
     @NotBlank @Length(min = 6)
