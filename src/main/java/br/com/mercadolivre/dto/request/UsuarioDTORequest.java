@@ -1,19 +1,17 @@
 package br.com.mercadolivre.dto.request;
 
 import br.com.mercadolivre.model.Usuario;
+import br.com.mercadolivre.validates.UniqueValue;
 
-import javax.persistence.EntityManager;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 
 public class UsuarioDTORequest {
 
     @NotBlank
     @Email
+    @UniqueValue(domainClass = Usuario.class, fieldName = "login", message = "O email informado já existe")
     private String login;
 
     @NotBlank @Size(min = 6)

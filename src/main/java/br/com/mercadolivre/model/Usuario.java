@@ -11,10 +11,6 @@ import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Size;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
 
@@ -27,6 +23,7 @@ public class Usuario {
 
     @NotBlank
     @Email
+
     private String login;
 
     @NotBlank @Length(min = 6)
@@ -42,6 +39,7 @@ public class Usuario {
     public Usuario(String login, String senha){
         this.login = login;
         this.senha = new MD5().criptografar(senha);
+        this.instanteCadastro = LocalDateTime.now();
     }
 
 
