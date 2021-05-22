@@ -3,7 +3,9 @@ package br.com.mercadolivre.dto.request;
 import br.com.mercadolivre.model.Categoria;
 import br.com.mercadolivre.model.Usuario;
 import br.com.mercadolivre.repository.CategoriaRepository;
+import br.com.mercadolivre.validates.ExistsId;
 import br.com.mercadolivre.validates.UniqueValue;
+import org.springframework.data.domain.Page;
 
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
@@ -15,6 +17,7 @@ public class CategoriaDTORequest {
     @UniqueValue(domainClass = Categoria.class, fieldName = "nome", message = "O nome da categoria que foi informado já existe")
     private String nome;
 
+    //@ExistsId(domainClass = Categoria.class, fieldName = "idCategoriaMae", message = "O identificador da categoria não foi informado")
     @ManyToOne //A categoria pode ter muitas categorias mães: Tecnologia -> Celulares -> Smartphones -> Android,Ios
     private Long idCategoriaMae;
 
@@ -52,4 +55,6 @@ public class CategoriaDTORequest {
         }
         return categoria;
     }
+
+
 }
