@@ -1,6 +1,7 @@
 /*
 INSERT INTO USUARIO(login,senha,instante_cadastro) VALUES ('cbbathaglini@gmail.com','$2y$12$jvryY9aUBk7bqlJ0/Hiof.Eng1qcbV.HpnllUPULanokRW/V9JMXK','2019-01-21T05:47:08.644');
 INSERT INTO USUARIO(login,senha,instante_cadastro) VALUES ('carine@gmail.com','$2y$12$jvryY9aUBk7bqlJ0/Hiof.Eng1qcbV.HpnllUPULanokRW/V9JMXK','2019-01-21T05:47:08.644');
+INSERT INTO USUARIO(login,senha,instante_cadastro) VALUES ('cbbathaglini2@gmail.com','$2y$12$jvryY9aUBk7bqlJ0/Hiof.Eng1qcbV.HpnllUPULanokRW/V9JMXK','2019-01-21T05:47:08.644');
 INSERT INTO PERFIL_USUARIO(nome) VALUES ('ROLE_ALUNO');
 INSERT INTO PERFIL_USUARIO(nome) VALUES ('ROLE_MODERADOR');
 
