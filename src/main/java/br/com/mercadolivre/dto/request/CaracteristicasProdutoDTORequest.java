@@ -4,6 +4,8 @@ import br.com.mercadolivre.model.CaracteristicasProduto;
 import br.com.mercadolivre.model.Produto;
 import br.com.mercadolivre.repository.ProdutoRepository;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,11 +25,9 @@ public class CaracteristicasProdutoDTORequest {
         this.descricao = descricao;
     }
 
-    public static CaracteristicasProduto converterLst(CaracteristicasProdutoDTORequest c, Produto produto) {
-        return new CaracteristicasProduto(c.getNome(), c.getDescricao(), produto);
+    public CaracteristicasProduto converter(@NotNull @Valid Produto produto) {
+        return new CaracteristicasProduto(nome,descricao,produto);
     }
-
-
 
     public String getNome() {
         return nome;

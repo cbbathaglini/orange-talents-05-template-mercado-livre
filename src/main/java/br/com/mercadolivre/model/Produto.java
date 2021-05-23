@@ -7,9 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -26,7 +24,7 @@ public class Produto {
     private String descricao;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
-    private List<CaracteristicasProduto> caracteristicasProduto;  // um produto pode ter várias características
+    private Set<CaracteristicasProduto> caracteristicasProduto = new HashSet<>();  // um produto pode ter várias características
 
     @ManyToOne
     private Categoria categoria;
@@ -43,12 +41,10 @@ public class Produto {
         this.quantidade = quantidade;
         this.descricao = descricao;
 
-        List<CaracteristicasProduto> caracteristicasProdutoList = new ArrayList<>();
-        for (CaracteristicasProdutoDTORequest c:caracteristicasProduto) {
-            caracteristicasProdutoList.add(CaracteristicasProdutoDTORequest.converterLst(c,this));
-        }
+         this.caracteristicasProduto.addAll(caracteristicasProduto.stream()
+                .map(caracteristica -> caracteristica.converter(this))
+                .collect(Collectors.toSet()));
 
-        this.caracteristicasProduto = caracteristicasProdutoList;
         this.categoria = categoria;
         this.instanteCadastro = LocalDateTime.now();
 
