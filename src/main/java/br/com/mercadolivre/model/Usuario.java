@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 
 @Entity
@@ -84,6 +85,15 @@ public class Usuario implements UserDetails {
                 ", senha='" + senha + '\'' +
                 ", instanteCadastro=" + instanteCadastro +
                 '}';
+    }
+
+    public static boolean logado(Optional<Usuario> usuarioLogado){
+        if(usuarioLogado.isPresent()){
+            if(usuarioLogado.get() != null){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

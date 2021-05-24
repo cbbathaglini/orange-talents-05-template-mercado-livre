@@ -1,10 +1,9 @@
 package br.com.mercadolivre.dto.request;
 
-import br.com.mercadolivre.model.CaracteristicasProduto;
-import br.com.mercadolivre.model.Categoria;
-import br.com.mercadolivre.model.Produto;
+import br.com.mercadolivre.model.*;
 import br.com.mercadolivre.repository.CategoriaRepository;
 import br.com.mercadolivre.repository.ProdutoRepository;
+import br.com.mercadolivre.repository.UsuarioRepository;
 import br.com.mercadolivre.validates.ExistsId;
 import io.jsonwebtoken.lang.Assert;
 import org.hibernate.validator.constraints.Length;
@@ -38,6 +37,11 @@ public class ProdutoDTORequest {
     @ExistsId(domainClass = Categoria.class, fieldName = "id")
     private Long idCategoria;
 
+    @NotNull
+    @ExistsId(domainClass = Usuario.class, fieldName = "id")
+    private Long idVendedor;
+
+
     public ProdutoDTORequest() {
     }
 
@@ -51,25 +55,26 @@ public class ProdutoDTORequest {
 
     public ProdutoDTORequest(String nome, BigDecimal preco, Integer quantidade,
                              String descricao, List<CaracteristicasProdutoDTORequest>
-                                     caracteristicasProdutoDTORequestList, Long idCategoria) {
-        //Assert.isTrue(caracteristicasProdutoDTORequestList.size() >= 3,"O produto precisa ter ao menos três características");
+                                     caracteristicasProdutoDTORequestList, Long idCategoria,
+                             Long idVendedor) {
         this.nome = nome;
         this.preco = preco;
         this.quantidade = quantidade;
         this.descricao = descricao;
         this.caracteristicasProdutoDTORequestList.addAll(caracteristicasProdutoDTORequestList);
         this.idCategoria = idCategoria;
+        this.idVendedor = idVendedor;
     }
 
-    public Produto converter( CategoriaRepository categoriaRepository) {
+    public Produto converter(CategoriaRepository categoriaRepository, UsuarioRepository usuarioRepository) {
         Optional<Categoria> categoriaOp = categoriaRepository.findById(this.idCategoria);// acha a categoria a partir do id
+        Optional<Usuario> usuarioOp = usuarioRepository.findById(this.idVendedor);
 
-        if(categoriaOp.isPresent()) {
-            return new Produto(nome, preco, quantidade, descricao, caracteristicasProdutoDTORequestList, categoriaOp.get());
+        if(categoriaOp.isPresent() && usuarioOp.isPresent()) {
+            return new Produto(nome, preco, quantidade, descricao, caracteristicasProdutoDTORequestList, categoriaOp.get(),usuarioOp.get());
         }
 
         return  null;
-
     }
 
 
