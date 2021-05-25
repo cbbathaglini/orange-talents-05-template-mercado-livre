@@ -1,17 +1,12 @@
 package br.com.mercadolivre.controller;
 
-import br.com.mercadolivre.dto.request.ImagemDoProdutoDTORequest;
-import br.com.mercadolivre.dto.request.ListaImagensDoProdutoDTORequest;
-import br.com.mercadolivre.dto.request.ProdutoDTORequest;
-import br.com.mercadolivre.dto.request.UsuarioDTORequest;
+import br.com.mercadolivre.dto.request.*;
 import br.com.mercadolivre.dto.response.ImagemDoProdutoDTOResponse;
 import br.com.mercadolivre.model.ImagemDoProduto;
+import br.com.mercadolivre.model.Opiniao;
 import br.com.mercadolivre.model.Produto;
 import br.com.mercadolivre.model.Usuario;
-import br.com.mercadolivre.repository.CategoriaRepository;
-import br.com.mercadolivre.repository.ImagemProdutoRepository;
-import br.com.mercadolivre.repository.ProdutoRepository;
-import br.com.mercadolivre.repository.UsuarioRepository;
+import br.com.mercadolivre.repository.*;
 import br.com.mercadolivre.upload.UploadImages;
 import br.com.mercadolivre.upload.UploaderImage;
 import br.com.mercadolivre.validateErrors.ErroAPI;
@@ -46,7 +41,8 @@ public class ProdutoController {
     @Autowired
     private ImagemProdutoRepository imagemProdutoRepository;
 
-
+    @Autowired
+    private OpiniaoRepository opiniaoRepository;
 
     @PostMapping
     @Transactional
@@ -69,8 +65,8 @@ public class ProdutoController {
                                           @AuthenticationPrincipal Usuario usuarioLogado,
                                           @Valid ListaImagensDoProdutoDTORequest listaImagensDoProdutoDTORequest,
                                           @Autowired UploadImages  uploaderImage){
-
-        if(!Produto.existeProduto(idProduto,produtoRepository)){
+        Produto produtoEncontrado = Produto.existeProduto(idProduto,produtoRepository);
+        if( produtoEncontrado == null){
             return ResponseEntity.status(404).body(new ErroAPI("Produto","O produto não foi encontrado na base de dados."));
         }
 
@@ -83,6 +79,22 @@ public class ProdutoController {
         }
 
         return ResponseEntity.status(403).body(new ErroAPI("Produto","O produto não pertence a este vendedor"));
+    }
+
+
+
+    @PostMapping(value = "/{id}/opiniao")
+    @Transactional
+    public ResponseEntity adicionaOpiniao(@PathVariable("id") Long idProduto,
+                                          @AuthenticationPrincipal Usuario usuarioLogado,
+                                          @Valid @RequestBody OpiniaoDTORequest opiniaoDTORequest){
+        Produto produtoEncontrado = Produto.existeProduto(idProduto,produtoRepository);
+        if(produtoEncontrado == null){
+            return ResponseEntity.status(404).body(new ErroAPI("Produto","O produto não foi encontrado na base de dados."));
+        }
+        Opiniao opiniao = opiniaoDTORequest.converter(usuarioLogado,produtoEncontrado);
+        opiniaoRepository.save(opiniao);
+        return ResponseEntity.ok().build();
     }
 
 

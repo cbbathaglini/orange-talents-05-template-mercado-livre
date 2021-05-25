@@ -40,6 +40,10 @@ public class Produto {
     @Size(min = 1)
     private Set<ImagemDoProduto> listaImagens = new HashSet<>();
 
+
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    private Set<Opiniao> opinioes = new HashSet<>();
+
     public Produto() {
     }
 
@@ -65,12 +69,12 @@ public class Produto {
         Assert.isTrue(this.quantidade >= 0, "A quantidade de itens disponíveis precisa ser maior ou igual a zero");
     }
 
-    public static boolean existeProduto(Long idProduto, ProdutoRepository produtoRepository) {
+    public static Produto existeProduto(Long idProduto, ProdutoRepository produtoRepository) {
         Optional<Produto> produtoOptional = produtoRepository.findById(idProduto);
         if(produtoOptional.isPresent()){
-            return true;
+            return produtoOptional.get();
         }
-        return false;
+        return null;
     }
 
     public void setListaImagens(Set<ImagemDoProduto> listaImagens) {
