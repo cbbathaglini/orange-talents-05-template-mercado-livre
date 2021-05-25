@@ -4,6 +4,7 @@ import br.com.mercadolivre.dto.request.ImagemDoProdutoDTORequest;
 import br.com.mercadolivre.dto.request.ListaImagensDoProdutoDTORequest;
 import br.com.mercadolivre.dto.request.ProdutoDTORequest;
 import br.com.mercadolivre.dto.request.UsuarioDTORequest;
+import br.com.mercadolivre.dto.response.ImagemDoProdutoDTOResponse;
 import br.com.mercadolivre.model.ImagemDoProduto;
 import br.com.mercadolivre.model.Produto;
 import br.com.mercadolivre.model.Usuario;
@@ -11,19 +12,23 @@ import br.com.mercadolivre.repository.CategoriaRepository;
 import br.com.mercadolivre.repository.ImagemProdutoRepository;
 import br.com.mercadolivre.repository.ProdutoRepository;
 import br.com.mercadolivre.repository.UsuarioRepository;
+import br.com.mercadolivre.upload.UploadImages;
+import br.com.mercadolivre.upload.UploaderImage;
+import br.com.mercadolivre.validateErrors.ErroAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/produtos")
@@ -41,16 +46,19 @@ public class ProdutoController {
     @Autowired
     private ImagemProdutoRepository imagemProdutoRepository;
 
+
+
     @PostMapping
     @Transactional
     @CacheEvict(value = "listaDeProdutos", allEntries = true)
-    public ResponseEntity cadastrar(@RequestBody @Valid ProdutoDTORequest produtoDTO, UriComponentsBuilder uriBuilder){
-        Produto produto = produtoDTO.converter(categoriaRepository,usuarioRepository);
+    public ResponseEntity cadastrar(@RequestBody @Valid ProdutoDTORequest produtoDTO, @AuthenticationPrincipal Usuario usuarioLogado, UriComponentsBuilder uriBuilder){
 
-        if(produto != null) {
+        Produto produto = produtoDTO.converter(categoriaRepository,usuarioLogado);
+        if (produto != null) {
             produtoRepository.save(produto);
             return ResponseEntity.ok().build();
         }
+
         return ResponseEntity.notFound().build();
     }
 
@@ -58,24 +66,23 @@ public class ProdutoController {
     @PostMapping(value = "/{id}/imagens")
     @Transactional
     public ResponseEntity adicionaImagens(@PathVariable("id") Long idProduto,
-                                          @NotEmpty(message = "A lista de imagens não pode ser vazia")
-                                          @RequestBody List<ImagemDoProdutoDTORequest> listaImagensDTORequest){
-        Optional<Usuario> usuarioLogadoOp = usuarioRepository.findByLogin("cbbathaglini2@gmail.com");
+                                          @AuthenticationPrincipal Usuario usuarioLogado,
+                                          @Valid ListaImagensDoProdutoDTORequest listaImagensDoProdutoDTORequest,
+                                          @Autowired UploadImages  uploaderImage){
 
-        if(Usuario.logado(usuarioLogadoOp)){
-            Long idUsuario = usuarioLogadoOp.get().getId();
-            Produto produto = produtoRepository.findProdutoByUsuarioId(idUsuario,idProduto);
-            if (produto != null) { //verifica se o produto existe neste usuário
-                produto.setListaImagens(ImagemDoProdutoDTORequest.converter(listaImagensDTORequest,produto));
-                produtoRepository.save(produto);
-
-                return ResponseEntity.ok().build();
-            } else{
-                return ResponseEntity.status(403).build();
-            }
+        if(!Produto.existeProduto(idProduto,produtoRepository)){
+            return ResponseEntity.status(404).body(new ErroAPI("Produto","O produto não foi encontrado na base de dados."));
         }
 
-        return ResponseEntity.notFound().build();
+        Produto produto = produtoRepository.findProdutoByUsuarioId(usuarioLogado.getId(),idProduto);
+        if (produto != null) { //verifica se o produto existe neste usuário
+            Set<ImagemDoProduto> setDeImagens = listaImagensDoProdutoDTORequest.converter(produto,uploaderImage);
+            produto.setListaImagens(setDeImagens);
+            produtoRepository.save(produto); //merge com as novas infos, com as imagens
+            return ResponseEntity.ok(listaImagensDoProdutoDTORequest.converterToRespose(setDeImagens));
+        }
+
+        return ResponseEntity.status(403).body(new ErroAPI("Produto","O produto não pertence a este vendedor"));
     }
 
 

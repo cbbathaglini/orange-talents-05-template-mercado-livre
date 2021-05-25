@@ -2,6 +2,7 @@ package br.com.mercadolivre.model;
 
 import br.com.mercadolivre.dto.request.CaracteristicasProdutoDTORequest;
 import br.com.mercadolivre.dto.request.ImagemDoProdutoDTORequest;
+import br.com.mercadolivre.repository.ProdutoRepository;
 import io.jsonwebtoken.lang.Assert;
 
 import javax.persistence.*;
@@ -62,6 +63,14 @@ public class Produto {
         //Assert.isTrue(this.descricao.length() > 1000, "A descrição precisa possuir menos que 1000 caracteres");
         Assert.isTrue((this.preco.compareTo(BigDecimal.ZERO)) == 1, "O preço precisa ser maior que R$ 0,00");
         Assert.isTrue(this.quantidade >= 0, "A quantidade de itens disponíveis precisa ser maior ou igual a zero");
+    }
+
+    public static boolean existeProduto(Long idProduto, ProdutoRepository produtoRepository) {
+        Optional<Produto> produtoOptional = produtoRepository.findById(idProduto);
+        if(produtoOptional.isPresent()){
+            return true;
+        }
+        return false;
     }
 
     public void setListaImagens(Set<ImagemDoProduto> listaImagens) {

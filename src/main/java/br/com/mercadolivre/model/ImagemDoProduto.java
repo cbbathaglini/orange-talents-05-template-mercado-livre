@@ -1,5 +1,6 @@
 package br.com.mercadolivre.model;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
@@ -16,32 +17,31 @@ public class ImagemDoProduto {
     @NotBlank
     private String nome;
 
-    @NotBlank @URL
+    @NotBlank
     private String link;
 
-    @ManyToOne
+    @Column(columnDefinition = "LONGTEXT")
+    private String imagemEmBase64;
 
+    @ManyToOne
     private Produto produto;
 
     public ImagemDoProduto() {
     }
 
-    public ImagemDoProduto(String nome, String link, Produto produto) {
+    public ImagemDoProduto(String nome, String link, String imagemEmBase64, Produto produto) {
         this.nome = nome;
         this.link = link;
         this.produto = produto;
+        this.imagemEmBase64 = imagemEmBase64;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ImagemDoProduto that = (ImagemDoProduto) o;
-        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(link, that.link) && Objects.equals(produto, that.produto);
+
+    public String getNome() {
+        return nome;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nome, link, produto);
+    public String getLink() {
+        return link;
     }
 }
