@@ -31,6 +31,7 @@ public class Produto {
 
     @ManyToOne
     private Categoria categoria;
+
     private LocalDateTime instanteCadastro;
 
     @ManyToOne
@@ -43,6 +44,9 @@ public class Produto {
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
     private Set<Opiniao> opinioes = new HashSet<>();
+
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    private Set<Pergunta> perguntas = new HashSet<>();
 
     public Produto() {
     }
@@ -79,5 +83,9 @@ public class Produto {
 
     public void setListaImagens(Set<ImagemDoProduto> listaImagens) {
         this.listaImagens = listaImagens;
+    }
+
+    public Usuario getVendedor() {
+        return vendedor;
     }
 }
