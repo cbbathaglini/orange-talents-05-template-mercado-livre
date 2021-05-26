@@ -36,7 +36,6 @@ public class ImagemDoProduto {
         this.imagemEmBase64 = imagemEmBase64;
     }
 
-
     public String getNome() {
         return nome;
     }

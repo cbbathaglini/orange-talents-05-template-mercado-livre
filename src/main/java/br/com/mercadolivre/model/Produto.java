@@ -46,6 +46,10 @@ public class Produto {
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
     private Set<Pergunta> perguntas = new HashSet<>();
 
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    private Set<Compra> compras = new HashSet<>();
+
+
     public Produto() {
     }
 
@@ -79,8 +83,22 @@ public class Produto {
         return null;
     }
 
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
+
     public void setListaImagens(Set<ImagemDoProduto> listaImagens) {
         this.listaImagens = listaImagens;
+    }
+
+    public boolean verificaEAbateQuantidade(ProdutoRepository produtoRepository){
+        if(this.getQuantidade() >= this.quantidade){
+            this.setQuantidade(this.getQuantidade() - this.quantidade);
+            produtoRepository.save(this);
+            return true;
+        }
+        return false;
     }
 
     public Usuario getVendedor() {
