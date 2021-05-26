@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 public class CaracteristicasProduto {
@@ -25,6 +26,8 @@ public class CaracteristicasProduto {
         this.descricao = descricao;
         this.produto = produto;
     }
+
+
 
     @Override
     public int hashCode() {
@@ -55,5 +58,13 @@ public class CaracteristicasProduto {
         } else if (!produto.equals(other.produto))
             return false;
         return true;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 }

@@ -38,9 +38,7 @@ public class Produto {
     private Usuario vendedor;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
-    @Size(min = 1)
     private Set<ImagemDoProduto> listaImagens = new HashSet<>();
-
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
     private Set<Opiniao> opinioes = new HashSet<>();
@@ -87,5 +85,49 @@ public class Produto {
 
     public Usuario getVendedor() {
         return vendedor;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public Set<CaracteristicasProduto> getCaracteristicasProduto() {
+        return caracteristicasProduto;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public LocalDateTime getInstanteCadastro() {
+        return instanteCadastro;
+    }
+
+    public Set<ImagemDoProduto> getListaImagens() {
+        return listaImagens;
+    }
+
+    public Set<Opiniao> getOpinioes() {
+        return opinioes;
+    }
+
+    public Set<Pergunta> getPerguntas() {
+        return perguntas;
     }
 }

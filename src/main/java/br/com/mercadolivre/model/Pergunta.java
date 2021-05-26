@@ -32,4 +32,12 @@ public class Pergunta {
         this.usuario = usuario;
         this.instanteCriacao = LocalDateTime.now();
     }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getPergunta() {
+        return pergunta;
+    }
 }

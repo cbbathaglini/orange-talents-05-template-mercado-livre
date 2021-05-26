@@ -34,11 +34,26 @@ public class Opiniao {
     public Opiniao() {
     }
 
-    public Opiniao(Integer nota, String titulo, String descricao, Usuario usuario, Produto produto) {
-        this.nota = nota;
+    public Opiniao(String titulo, String descricao, Usuario usuario, Produto produto) {
         this.titulo = titulo;
         this.descricao = descricao;
         this.usuario = usuario;
         this.produto = produto;
+    }
+
+    public void setNota(Integer nota) {
+        this.nota = nota;
+    }
+
+    public Integer getNota() {
+        return nota;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 }

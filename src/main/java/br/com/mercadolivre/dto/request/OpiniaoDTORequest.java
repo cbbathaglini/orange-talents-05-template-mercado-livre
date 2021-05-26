@@ -28,7 +28,7 @@ public class OpiniaoDTORequest {
     public OpiniaoDTORequest() {
     }
 
-    public OpiniaoDTORequest(Integer nota, String titulo, String descricao) {
+    public OpiniaoDTORequest(Integer nota,String titulo, String descricao) {
         this.nota = nota;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -37,8 +37,14 @@ public class OpiniaoDTORequest {
 
     //Integer nota, String titulo, String descricao, Usuario usuario, Produto produto)
     public Opiniao converter(Usuario usuario, Produto produto){
-        return new Opiniao(this.nota,this.titulo, this.descricao, usuario, produto);
+        Opiniao opiniao = new Opiniao(this.titulo, this.descricao, usuario, produto);
+        if (this.nota != null){
+            opiniao.setNota(this.nota);
+        }
+        return opiniao;
     }
+
+
 
     public Integer getNota() {
         return nota;
