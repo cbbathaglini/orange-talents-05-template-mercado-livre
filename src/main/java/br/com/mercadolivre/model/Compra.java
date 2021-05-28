@@ -81,10 +81,8 @@ public class Compra {
 
     public Pagamento adicionarPagamento(CompraRepository compraRepository, Pagamento pagamento){
 
-        this.setStatus(Status.PAGA);
-        Set<Pagamento> pagamentosList = new HashSet<>();
-        pagamentosList.add(pagamento);
-        this.setPagamentosList(pagamentosList);
+        this.status = Status.PAGA;
+        this.pagamentosList.add(pagamento);
         compraRepository.save(this);
 
         return pagamento;
@@ -106,13 +104,13 @@ public class Compra {
         return this.getGatewayPagamento().retornaStatus(statusPassado);
     }
 
-    public void setStatus(Status status) {
+    /*public void setStatus(Status status) {
         this.status = status;
-    }
+    }*/
 
-    public void setPagamentosList(Set<Pagamento> pagamentosList) {
+    /*public void setPagamentosList(Set<Pagamento> pagamentosList) {
         this.pagamentosList = pagamentosList;
-    }
+    }*/
 
     public Set<Pagamento> getPagamentosList() {
         return pagamentosList;
