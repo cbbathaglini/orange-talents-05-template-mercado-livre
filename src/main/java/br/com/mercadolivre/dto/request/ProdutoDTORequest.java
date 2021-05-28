@@ -38,8 +38,6 @@ public class ProdutoDTORequest {
     private Long idCategoria;
 
 
-
-
     public ProdutoDTORequest() {
     }
 

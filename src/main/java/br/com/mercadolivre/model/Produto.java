@@ -54,15 +54,24 @@ public class Produto {
     }
 
     public Produto(String nome, BigDecimal preco, Integer quantidade, String descricao,
-                   Collection<CaracteristicasProdutoDTORequest> caracteristicasProduto,
+                   Collection<CaracteristicasProdutoDTORequest> caracteristicasProdutodto,
                    Categoria categoria,Usuario vendedor) {
         this.nome = nome;
         this.preco = preco;
         this.quantidade = quantidade;
         this.descricao = descricao;
 
-         this.caracteristicasProduto.addAll(caracteristicasProduto.stream()
-                .map(caracteristica -> caracteristica.converter(this))
+        /*
+        Set<CaracteristicasProduto> caracteristicasProdutos = new HashSet<>();
+        for (CaracteristicasProdutoDTORequest c:caracteristicasProdutodto) {
+            caracteristicasProdutos.add(c.converter(this));
+        }
+        this.caracteristicasProduto.addAll(caracteristicasProdutos);
+        */
+
+
+         this.caracteristicasProduto.addAll(caracteristicasProdutodto.stream()
+                .map(c -> c.converter(this))
                 .collect(Collectors.toSet()));
 
         this.categoria = categoria;
@@ -147,5 +156,14 @@ public class Produto {
 
     public Set<Pergunta> getPerguntas() {
         return perguntas;
+    }
+
+    public String montarInfos() {
+        String infos = "Nome do produto: " + this.nome + "\n" +
+                       "Descrição do produto: " + this.descricao + "\n" +
+                       "Nome do vendedor: " + this.vendedor.getUsername() + "\n" +
+                       "Preço: R$ " + this.preco + "\n";
+
+        return infos;
     }
 }

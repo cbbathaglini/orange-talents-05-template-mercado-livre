@@ -12,7 +12,9 @@ public class CompraDTORequest {
     @NotNull @Positive
     private Integer quantidade;
 
+    @NotNull
     private GatewayPagamento gatewayPagamento;
+
 
     public CompraDTORequest() {
     }
@@ -24,11 +26,9 @@ public class CompraDTORequest {
     }
 
 
-    //Integer quantidade, Produto produto, Usuario comprador, BigDecimal valorCompra, Status status, GatewayPagamento gatewayPagamento) {
     public Compra converter(Produto produto, Usuario usuario){
         return  new Compra(this.quantidade,produto,usuario,produto.getPreco(),this.gatewayPagamento);
     }
-
 
 
     public Integer getQuantidade() {

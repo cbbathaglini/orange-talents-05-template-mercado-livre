@@ -26,11 +26,10 @@ public class CompraController {
     private CompraRepository compraRepository;
 
     @PostMapping(value = "/{id}")
-    @Transactional
     public ResponseEntity compraProduto(@PathVariable("id") Long idProduto,
-                                          @AuthenticationPrincipal Usuario usuarioLogado,
-                                          @Valid @RequestBody CompraDTORequest compraDTORequest,
-                                            UriComponentsBuilder uriComponentsBuilder){
+                                        @AuthenticationPrincipal Usuario usuarioLogado,
+                                        @Valid @RequestBody CompraDTORequest compraDTORequest,
+                                        UriComponentsBuilder uriComponentsBuilder){
 
         Produto produtoEncontrado = Produto.existeProduto(idProduto,produtoRepository);
         if(produtoEncontrado == null){
@@ -44,7 +43,7 @@ public class CompraController {
         Compra compra = compraDTORequest.converter(produtoEncontrado,usuarioLogado);
         compraRepository.save(compra);
 
-        Email email = new Email(produtoEncontrado.getVendedor(),"", "Compra de produto","O usuário "+usuarioLogado.getUsername()+" se interessou pela compra do produto "+produtoEncontrado.getNome());
+        Email email = new Email(produtoEncontrado.getVendedor(),null, "Compra de produto","O usuário "+usuarioLogado.getUsername()+" se interessou pela compra do produto "+produtoEncontrado.getNome());
         email.enviar();
 
         return ResponseEntity.status(302).body(Compra.URLRetorno(compra,uriComponentsBuilder));

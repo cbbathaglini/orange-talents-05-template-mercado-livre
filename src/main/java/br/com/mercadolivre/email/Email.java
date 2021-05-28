@@ -2,7 +2,7 @@ package br.com.mercadolivre.email;
 
 import br.com.mercadolivre.model.Usuario;
 
-public class Email {
+public class Email implements EmailSender{
 
     private Usuario usuarioDestinatario;
 
@@ -21,10 +21,14 @@ public class Email {
     }
 
     public  String enviar(){
-        String email = "| Destinatário: " + this.usuarioDestinatario.getUsername() + "\n" +
-                       "| Assunto: " + this.assunto + "\n" +
-                       "| Título: " + this.titulo + "\n" +
-                       "| Corpo da mensagem: " + this.mensagem + "\n" ;
+        String email = "| Destinatário: " + this.usuarioDestinatario.getUsername() + "\n";
+        if(this.assunto != null) email += "| Assunto: " + this.assunto + "\n";
+        if(this.titulo != null) email += "| Título: " + this.titulo + "\n";
+        email +=   "| Corpo da mensagem: " + this.mensagem + "\n";
+
         return email;
     }
+
+
+
 }

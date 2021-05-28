@@ -1,9 +1,15 @@
 package br.com.mercadolivre.model;
 
+import br.com.mercadolivre.dto.request.GatewayDTORequest;
+import br.com.mercadolivre.repository.CompraRepository;
+import br.com.mercadolivre.repository.ProdutoRepository;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Entity
 public class Compra {
@@ -21,9 +27,13 @@ public class Compra {
     @ManyToOne
     private Usuario comprador;//um comprador pode ter várias compras
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private GatewayPagamento gatewayPagamento;
+
+    @OneToMany(mappedBy = "compra", cascade = CascadeType.MERGE)
+    private Set<Pagamento> pagamentosList = new HashSet<>();
 
     public Compra() {
     }
@@ -49,5 +59,62 @@ public class Compra {
         return gatewayPagamento;
     }
 
+    public Usuario getComprador() {
+        return comprador;
+    }
 
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public static Compra existeCompra(Long idCompra, CompraRepository compraRepository) {
+        Optional<Compra> compraOptional = compraRepository.findById(idCompra);
+        if(compraOptional.isPresent()){
+            return compraOptional.get();
+        }
+        return null;
+    }
+
+    public Pagamento adicionarPagamento(CompraRepository compraRepository, Pagamento pagamento){
+
+        this.setStatus(Status.PAGA);
+        Set<Pagamento> pagamentosList = new HashSet<>();
+        pagamentosList.add(pagamento);
+        this.setPagamentosList(pagamentosList);
+        compraRepository.save(this);
+
+        return pagamento;
+    }
+
+
+    public boolean pagamentoInvalido(CompraRepository compraRepository){
+        //Uma compra não pode ter mais de duas transações concluídas com sucesso associada a ela.
+        int sucesso = 0;
+        for (Pagamento p:this.pagamentosList) {
+            if(p.getStatusPagamento() == StatusPagamento.Sucesso) {sucesso++;}
+            if (sucesso >= 2) return true;
+        }
+        return false;
+
+    }
+
+    public StatusPagamento getStatusPagamento(String statusPassado) {
+        return this.getGatewayPagamento().retornaStatus(statusPassado);
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setPagamentosList(Set<Pagamento> pagamentosList) {
+        this.pagamentosList = pagamentosList;
+    }
+
+    public Set<Pagamento> getPagamentosList() {
+        return pagamentosList;
+    }
 }

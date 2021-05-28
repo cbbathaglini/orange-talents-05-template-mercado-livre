@@ -39,7 +39,8 @@ public class ProdutoController {
     @PostMapping
     @Transactional
     @CacheEvict(value = "listaDeProdutos", allEntries = true)
-    public ResponseEntity cadastrar(@RequestBody @Valid ProdutoDTORequest produtoDTO, @AuthenticationPrincipal Usuario usuarioLogado, UriComponentsBuilder uriBuilder){
+    public ResponseEntity cadastrar(@RequestBody @Valid ProdutoDTORequest produtoDTO,
+                                    @AuthenticationPrincipal Usuario usuarioLogado){
 
         Produto produto = produtoDTO.converter(categoriaRepository,usuarioLogado);
         if (produto != null) {

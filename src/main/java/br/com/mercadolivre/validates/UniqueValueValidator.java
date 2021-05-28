@@ -11,7 +11,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 
-@Component
 public class UniqueValueValidator implements ConstraintValidator<UniqueValue, Object> {
 
     private String domainAttribute;
@@ -27,7 +26,6 @@ public class UniqueValueValidator implements ConstraintValidator<UniqueValue, Ob
     }
 
     @Override
-    @Transactional
     public boolean isValid(Object valor, ConstraintValidatorContext contexto) {
         Query q = em.createQuery("SELECT 1 FROM " + klass.getName() + " WHERE " + domainAttribute + " = :valueparam" );
         q.setParameter("valueparam", valor);
