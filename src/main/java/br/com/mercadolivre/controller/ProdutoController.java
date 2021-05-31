@@ -10,7 +10,6 @@ import br.com.mercadolivre.upload.UploadImages;
 import br.com.mercadolivre.upload.UploaderImage;
 import br.com.mercadolivre.validateErrors.ErroAPI;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.ResponseEntity;
