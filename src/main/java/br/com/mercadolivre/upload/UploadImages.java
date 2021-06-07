@@ -15,8 +15,7 @@ public class UploadImages implements UploaderImage{
 
     @Override
     public String imgEmBase64(MultipartFile file) throws IOException {
-        return  new String(Base64.encodeBase64(file.getBytes()), "UTF-8");
-
+        return new String(Base64.encodeBase64(file.getBytes()), "UTF-8");
     }
 
     @Override

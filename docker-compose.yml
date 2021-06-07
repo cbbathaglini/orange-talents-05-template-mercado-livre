@@ -1,51 +1,34 @@
-version: "3"
+version: '3'
 
 services:
-
-  db:
-    image: mysql:5.7
-    restart: always
-    volumes:
-      - db_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
+  mlmariadbv2:
+    image: mariadb:10.2
     networks:
-      - wp
-
-  wordpress:
-    depends_on:
-      - db
-    image: wordpress
-    restart: always
-    volumes: [ "./:/var/www/html/wp-content" ]
+      - mercadolivre-mariadb
     environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
+      #MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: mercadolivre
+
+
+  mercadolivreimg:
+    restart: always
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    image: mercadolivreimg
     ports:
-      - 8888:80
-      - 8883:443
+      - 8083:8080
     networks:
-      - wp
-
-  phpmyadmin:
-    depends_on:
-      - db
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - 8080:80
+      - mercadolivre-mariadb
     environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: password
-    networks:
-      - wp
+      DB_DATABASE: mercadolivre
+      DB_USER: root
+      DB_HOST: jdbc:mariadb://mlmariadbv2/mercadolivre
+      DB_PASSWORD: password
+    depends_on:
+      - mlmariadbv2
 
 networks:
-  wp:
-
-volumes:
-  db_data:
+  mercadolivre-mariadb:
+    driver: bridge

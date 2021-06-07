@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
-@Profile(value = {"prod", "test"})
+//@Profile(value = {"prod", "test"})
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -35,7 +35,15 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	protected AuthenticationManager authenticationManager() throws Exception {
 		return super.authenticationManager();
 	}
-	
+
+
+	/*@Override
+	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+		clients.inMemory().withClient("pgcil").secret("{noop}secret").scopes("read", "write")
+				.authorizedGrantTypes("password", "refresh_token").accessTokenValiditySeconds(3600)
+				.refreshTokenValiditySeconds(18000);
+	}
+	*/
 	//Configuracoes de autenticacao
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -45,23 +53,23 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	//Configuracoes de autorizacao
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
-		http.authorizeRequests()
-		.antMatchers(HttpMethod.GET, "/categorias").permitAll()
-				.antMatchers(HttpMethod.POST, "/usuarios").permitAll()
-		.antMatchers(HttpMethod.GET, "/categorias/*").permitAll()
-		.antMatchers(HttpMethod.POST, "/auth").permitAll()
-		.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
-		.antMatchers(HttpMethod.GET, "/ranking-vendedores").permitAll()
-		.antMatchers(HttpMethod.POST, "/ranking-vendedores").permitAll()
-		.antMatchers(HttpMethod.GET, "/notafiscal").permitAll()
-		.antMatchers(HttpMethod.POST, "/notafiscal").permitAll()
-				.antMatchers(HttpMethod.DELETE, "/categorias/*").hasRole("MODERADOR")
-				.antMatchers(HttpMethod.POST, "/produtos/*").hasRole("MODERADOR")
-		.anyRequest().authenticated()
-		.and().csrf().disable()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
+			http.antMatcher("/**")
+					.authorizeRequests()
+					.antMatchers("/auth/**").permitAll()
+					.antMatchers(HttpMethod.GET, "/categorias").permitAll()
+					.antMatchers(HttpMethod.POST, "/usuarios").permitAll()
+					.antMatchers(HttpMethod.GET, "/categorias/*").permitAll()
+					.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
+					.antMatchers(HttpMethod.GET, "/ranking-vendedores").permitAll()
+					.antMatchers(HttpMethod.POST, "/ranking-vendedores").permitAll()
+					.antMatchers(HttpMethod.GET, "/notafiscal").permitAll()
+					.antMatchers(HttpMethod.POST, "/notafiscal").permitAll()
+					.antMatchers(HttpMethod.DELETE, "/categorias/*").hasRole("MODERADOR")
+					.antMatchers(HttpMethod.POST, "/produtos/*").hasRole("MODERADOR")
+					.anyRequest().authenticated()
+					.and().csrf().disable()
+					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+					.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
 
 
 	}
@@ -73,5 +81,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		//web.ignoring().antMatchers("/**");
 		web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
 	}
+
+
 	
 }

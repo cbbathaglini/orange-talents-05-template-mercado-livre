@@ -100,8 +100,8 @@ public class Compra {
 
     }
 
-    public StatusPagamento getStatusPagamento(String statusPassado) {
-        return this.getGatewayPagamento().retornaStatus(statusPassado);
+    public boolean getStatusPagamento(String statusPassado) {
+        return this.getGatewayPagamento().retornaStatus(statusPassado).equals(StatusPagamento.Sucesso);
     }
 
     /*public void setStatus(Status status) {

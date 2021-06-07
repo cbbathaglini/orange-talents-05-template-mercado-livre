@@ -32,6 +32,7 @@ public class ImagensController {
                                           @AuthenticationPrincipal Usuario usuarioLogado,
                                           @Valid ListaImagensDoProdutoDTORequest listaImagensDoProdutoDTORequest,
                                           @Autowired UploadImages uploaderImage){
+
         Produto produtoEncontrado = Produto.existeProduto(idProduto,produtoRepository);
         if( produtoEncontrado == null){
             return ResponseEntity.status(404).body(new ErroAPI("Produto","O produto não foi encontrado na base de dados."));
